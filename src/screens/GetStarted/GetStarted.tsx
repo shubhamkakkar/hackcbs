@@ -30,7 +30,7 @@ function GetStartedComponent(props) {
                 }}
             >
                 <TouchableOpacity
-                    onPress={() => props.navigation.navigate("AuthScreen")}
+                    onPress={() => props.navigation.navigate("ItemScreens")}
                     style={{
                         padding: 10,
                         borderRadius: 10,

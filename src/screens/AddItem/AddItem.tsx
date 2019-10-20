@@ -1,7 +1,17 @@
 import React from "react"
-import {KeyboardAvoidingView, Text, TextInput, View, TouchableOpacity} from "react-native";
+import {
+    KeyboardAvoidingView,
+    Text,
+    TextInput,
+    View,
+    TouchableOpacity,
+    ScrollView,
+    Image,
+} from "react-native";
 import Constants from "expo-constants";
 import axios from "axios"
+
+import {LinearGradient} from 'expo-linear-gradient'
 
 // @ts-ignore
 function FormField({title, placeholder, onChange, index}: TFormFields) {
@@ -47,7 +57,7 @@ const itemFields = [
     },
     {
         title: "Quantity",
-        placeholder: "1kg/1lt"
+        placeholder: "1 kg/1 lt/ 1 Packet"
     },
 ];
 
@@ -124,7 +134,28 @@ export default function AddItem(props) {
     return (
         <KeyboardAvoidingView style={[{flex: 1, marginTop: Constants.statusBarHeight}]} behavior="padding" enabled
                               contentContainerStyle={{flexGrow: 1}}>
-            <View style={{flex: 1, justifyContent: "center", margin: 10}}>
+            <View style={{flex: 1, justifyContent: "center", alignItems: "center"}}>
+                <Image
+                    source={{uri: "https://cdn.dribbble.com/users/1111912/screenshots/4391205/3.png"}}
+                    style={{
+                        flex: 1,
+                        width: "100%",
+                        height: "100%",
+                        resizeMode: "contain"
+                    }}
+                />
+            </View>
+            <ScrollView
+                contentContainerStyle={{
+                    justifyContent: "center",
+                    borderTopLeftRadius: 20,
+                    borderTopRightRadius: 20,
+                    padding: 30,
+                    backgroundColor: "white"
+                }}
+                style={{
+                    flex: 1,
+                }}>
                 {
                     // @ts-ignore
                     itemFields.map(({title, placeholder}, key) => (
@@ -136,7 +167,7 @@ export default function AddItem(props) {
                         Submit
                     </Text>
                 </TouchableOpacity>
-            </View>
+            </ScrollView>
         </KeyboardAvoidingView>
     )
 }

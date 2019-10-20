@@ -6,7 +6,7 @@ import React from "react";
 
 export const SplashScreen = createStackNavigator(
     {
-        // GetStarted,
+        GetStarted,
         AuthScreen
     },
     {

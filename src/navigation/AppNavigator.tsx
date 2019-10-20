@@ -3,6 +3,6 @@ import {ItemScreens, SplashScreen} from "./routes";
 
 export default createAppContainer(
     createSwitchNavigator({
-        // SplashScreen,
+        SplashScreen,
         ItemScreens
     }))
