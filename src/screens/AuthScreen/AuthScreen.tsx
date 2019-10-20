@@ -26,7 +26,15 @@ let formFields: TFormFields[] = [
     },
 ]
 
-function FormField({title, secureTextEntry}: TFormFields) {
+let payloadObjet = {
+    email: "",
+    password: "",
+    confirmPassword: ""
+}
+
+
+// @ts-ignore
+function FormField({title, secureTextEntry, onChangeText}) {
     return (
         <View>
             <View>
@@ -35,7 +43,7 @@ function FormField({title, secureTextEntry}: TFormFields) {
                 </Text>
             </View>
             <TextInput
-                {...{secureTextEntry}}
+                {...{onChangeText, secureTextEntry}}
                 blurOnSubmit={true}
                 clearTextOnFocus={true}
                 style={[{
@@ -48,35 +56,38 @@ function FormField({title, secureTextEntry}: TFormFields) {
     )
 }
 
+const FormWrapper = React.memo(({children}) => (
+    <View style={[s.flex1, s.formWrapper]}>
+        {children}
+    </View>
+));
+const ViewOne = React.memo(() => (
+    <View style={[s.center, s.flex1, s.alignCenter]}>
+        <Image source={{uri: 'https://cdn.dribbble.com/users/4598/screenshots/3706567/flavors.jpg'}}
+               style={{width: 100, height: 100, resizeMode: "contain"}}/>
+        <Text style={{color: "#0A10C8", textAlign: "center", fontSize: 22, fontWeight: "bold"}}> Food
+            Kart </Text>
+    </View>
+));
+
+const LoginSigninButton = (({title, backgroundColor, color, onPress}: ButtonProps) => (
+    <View style={[s.center, s.alignCenter, {},]}>
+        <TouchableOpacity style={{
+            borderRadius: 10,
+            margin: 7.5,
+            padding: 10,
+            backgroundColor
+        }} {...{onPress}}>
+            <Text style={{color}}>{title}</Text>
+        </TouchableOpacity>
+    </View>
+));
+
+
 export default function AuthScreen() {
     const [isToggle, toggle] = React.useState(false);
     const [_formFields, setFormFields] = React.useState([...formFields]);
-    const FormWrapper = React.memo(({children}) => (
-        <View style={[s.flex1, s.formWrapper]}>
-            {children}
-        </View>
-    ));
-    const ViewOne = React.memo(() => (
-        <View style={[s.center, s.flex1, s.alignCenter]}>
-            <Image source={{uri: 'https://cdn.dribbble.com/users/4598/screenshots/3706567/flavors.jpg'}}
-                   style={{width: 100, height: 100, resizeMode: "contain"}}/>
-            <Text style={{color: "#0A10C8", textAlign: "center", fontSize: 22, fontWeight: "bold"}}> Food
-                Kart </Text>
-        </View>
-    ));
-
-    const LoginSigninButton = (({title, backgroundColor, color, onPress}: ButtonProps) => (
-        <View style={[s.flex1, s.center, s.alignCenter, {
-            borderRadius: 10,
-            marginHorizontal: 5,
-            padding: 20,
-            backgroundColor
-        },]}>
-            <TouchableOpacity style={{borderRadius: 10}} {...{onPress}} >
-                <Text style={{color}}>{title}</Text>
-            </TouchableOpacity>
-        </View>
-    ));
+    const [isLogin, setLogin] = React.useState(true)
 
     React.useEffect(() => {
         if (_formFields.length === 3) {
@@ -84,56 +95,79 @@ export default function AuthScreen() {
         }
     }, [isToggle])
 
+
+    function onChangeText(text, key) {
+
+    }
+
+    function callAuthentication(title) {
+        const {email, password, confirmPassword} = payloadObjet
+        if (email.trim().length) {
+            if (title === "signin") {
+                if (password === confirmPassword) {
+                    alert("match")
+                } else {
+                    alert("Passwords Didnot match")
+                }
+            } else {
+
+            }
+        }
+    }
+
     return (
         <KeyboardAvoidingView style={[s.flex1, {marginTop: Constants.statusBarHeight}]} behavior="padding" enabled
                               contentContainerStyle={{flexGrow: 1}}>
             <LinearGradient style={s.flex1} colors={["#FFFEFF", "#D7FFFE"]}>
                 <ViewOne/>
-
-                {
-                    isToggle && (
-                        <FormWrapper>
-                            <View style={[s.flex2, s.center]}>
-                                {
-                                    _formFields.map((props: TFormFields, key: number) => (
-                                        <FormField {...props} key={key}/>
-                                    ))
-                                }
-                            </View>
-                        </FormWrapper>
-                    )
-                }
-                <View style={{
-                    flexDirection: "row",
-                    justifyContent: "space-around",
-                    margin: 10
-                }}>
-                    <LoginSigninButton onPress={() => {
-                        toggle(true);
-
-                        if (_formFields.length === 3) {
-                            setFormFields(formFields)
+                <FormWrapper>
+                    <View style={[s.flex2, s.center]}>
+                        {
+                            _formFields.map((props: TFormFields, key: number) => (
+                                <FormField {...props} key={key}
+                                           onChangeText={(text, key) => onChangeText(text, key)}/>
+                            ))
                         }
-                    }} title={"Log In"} backgroundColor={"#0A10C8"} color={"white"}/>
-                    <LoginSigninButton
-                        onPress={() => {
-                            toggle(true)
-                            let temp = [
-                                ...formFields,
+                    </View>
+                </FormWrapper>
+                <LoginSigninButton
+                    onPress={() => {
+                        if (isLogin) {
+                            alert("login")
+                        } else {
+                            alert("signin")
+                        }
+                    }}
+                    title={isLogin ? "Login" : "Signup"}
+                    backgroundColor={"#303f9f"}
+                    color={"white"}
+                />
+                <LoginSigninButton
+                    onPress={() => {
+                        if (_formFields.length === 2) {
+                            const temp = [
+                                ..._formFields,
                                 {
                                     title: "Confirm Password",
                                     secureTextEntry: true
-                                }
-                            ];
+                                },
+                            ]
                             setFormFields(temp)
-                        }}
-                        title={"Sign In"} color={"#0A10C8"} backgroundColor={"white"}/>
-                </View>
+                        } else {
+                            setFormFields(formFields)
+                        }
+                        setLogin((value) => !value)
+
+                    }}
+                    title={isLogin ? "Signup" : "Login"}
+                    backgroundColor={"white"}
+                    color={"#303f9f"}
+                />
+
             </LinearGradient>
         </KeyboardAvoidingView>
     )
 }
-
 
 const s = StyleSheet.create({
     flex1: {
@@ -150,8 +184,5 @@ const s = StyleSheet.create({
     },
     formWrapper: {
         padding: 20,
-        borderTopLeftRadius: 50,
-        borderTopRightRadius: 50,
-        backgroundColor: "white"
     }
 });
