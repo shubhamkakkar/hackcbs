@@ -30,7 +30,7 @@ let payloadObjet = {
     email: "",
     password: "",
     confirmPassword: ""
-}
+};
 
 
 // @ts-ignore
@@ -84,11 +84,11 @@ const LoginSigninButton = (({title, backgroundColor, color, onPress}: ButtonProp
 ));
 
 
-export default function AuthScreen() {
+export default function AuthScreen(props) {
     const [isToggle, toggle] = React.useState(false);
     const [_formFields, setFormFields] = React.useState([...formFields]);
     const [isLogin, setLogin] = React.useState(true)
-
+    const [cred, setEmail] = React.useState("")
     React.useEffect(() => {
         if (_formFields.length === 3) {
 
@@ -97,22 +97,28 @@ export default function AuthScreen() {
 
 
     function onChangeText(text, key) {
+        if (key === 0) {
+            setEmail(text)
+        }
+
+        if (key === 1) {
+            payloadObjet.password = text
+        }
+
+        if (key === 2) {
+            payloadObjet.confirmPassword = text
+        }
 
     }
 
     function callAuthentication(title) {
         const {email, password, confirmPassword} = payloadObjet
-        if (email.trim().length) {
-            if (title === "signin") {
-                if (password === confirmPassword) {
-                    alert("match")
-                } else {
-                    alert("Passwords Didnot match")
-                }
-            } else {
-
-            }
+        if(password !== confirmPassword){
+            alert("password not match")
+        }    else {
+            props.navigation.navigate("ItemScreens")
         }
+
     }
 
     return (
@@ -125,7 +131,7 @@ export default function AuthScreen() {
                         {
                             _formFields.map((props: TFormFields, key: number) => (
                                 <FormField {...props} key={key}
-                                           onChangeText={(text, key) => onChangeText(text, key)}/>
+                                           onChangeText={(text) => onChangeText(text, key)}/>
                             ))
                         }
                     </View>
@@ -133,9 +139,9 @@ export default function AuthScreen() {
                 <LoginSigninButton
                     onPress={() => {
                         if (isLogin) {
-                            alert("login")
+                            callAuthentication("login")
                         } else {
-                            alert("signin")
+                            callAuthentication("signin")
                         }
                     }}
                     title={isLogin ? "Login" : "Signup"}
